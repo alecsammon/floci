@@ -108,3 +108,7 @@ floci:
       enabled: true
     cloudformation:
       enabled: true
+    opensearch:
+      enabled: true
+      default-image: "opensearchproject/opensearch:2.19.1"
+      default-engine-version: "OpenSearch_2.19"

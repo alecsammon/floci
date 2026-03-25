@@ -57,6 +57,9 @@ public class EventBridgeHandler {
                 case "RemoveTargets" -> handleRemoveTargets(request, region);
                 case "ListTargetsByRule" -> handleListTargetsByRule(request, region);
                 case "PutEvents" -> handlePutEvents(request, region);
+                case "ListTagsForResource" -> handleListTagsForResource(request, region);
+                case "TagResource" -> handleTagResource(request, region);
+                case "UntagResource" -> handleUntagResource(request, region);
                 default -> Response.status(400)
                         .entity(new AwsErrorResponse("UnsupportedOperation", "Operation " + action + " is not supported."))
                         .build();
@@ -259,6 +262,40 @@ public class EventBridgeHandler {
             resultEntries.add(node);
         }
         return Response.ok(response).build();
+    }
+
+    private Response handleListTagsForResource(JsonNode request, String region) {
+        String arn = request.path("ResourceARN").asText(null);
+        if (arn == null) {
+            throw new AwsException("ValidationException", "ResourceARN is required.", 400);
+        }
+        // Find the bus by ARN and return its tags
+        Map<String, String> tags = new HashMap<>();
+        for (EventBus bus : eventBridgeService.listEventBuses(null, region)) {
+            if (arn.equals(bus.getArn())) {
+                tags = bus.getTags();
+                break;
+            }
+        }
+        ObjectNode response = objectMapper.createObjectNode();
+        ArrayNode tagsArray = response.putArray("Tags");
+        tags.forEach((key, value) -> {
+            ObjectNode tag = objectMapper.createObjectNode();
+            tag.put("Key", key);
+            tag.put("Value", value);
+            tagsArray.add(tag);
+        });
+        return Response.ok(response).build();
+    }
+
+    private Response handleTagResource(JsonNode request, String region) {
+        // Stub — accept and ignore
+        return Response.ok(objectMapper.createObjectNode()).build();
+    }
+
+    private Response handleUntagResource(JsonNode request, String region) {
+        // Stub — accept and ignore
+        return Response.ok(objectMapper.createObjectNode()).build();
     }
 
     // ──────────────────────────── Helpers ────────────────────────────

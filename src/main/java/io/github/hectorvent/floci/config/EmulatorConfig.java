@@ -150,6 +150,7 @@ public interface EmulatorConfig {
         CognitoServiceConfig cognito();
         StepFunctionsServiceConfig stepfunctions();
         CloudFormationServiceConfig cloudformation();
+        OpenSearchServiceConfig opensearch();
     }
 
     interface SsmServiceConfig {
@@ -293,6 +294,20 @@ public interface EmulatorConfig {
     interface CloudFormationServiceConfig {
         @WithDefault("true")
         boolean enabled();
+    }
+
+    interface OpenSearchServiceConfig {
+        @WithDefault("true")
+        boolean enabled();
+
+        @WithDefault("opensearchproject/opensearch:2.19.1")
+        String defaultImage();
+
+        @WithDefault("OpenSearch_2.19")
+        String defaultEngineVersion();
+
+        /** Docker network to attach OpenSearch containers to. Empty = default bridge. */
+        Optional<String> dockerNetwork();
     }
 
     interface LambdaServiceConfig {

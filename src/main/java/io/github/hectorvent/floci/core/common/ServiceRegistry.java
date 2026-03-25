@@ -45,6 +45,7 @@ public class ServiceRegistry {
             case "cognito-idp" -> config.services().cognito().enabled();
             case "states" -> config.services().stepfunctions().enabled();
             case "cloudformation" -> config.services().cloudformation().enabled();
+            case "es", "opensearch" -> config.services().opensearch().enabled();
             default -> true;
         };
     }
@@ -71,6 +72,7 @@ public class ServiceRegistry {
         if (config.services().cognito().enabled()) enabled.add("cognito-idp");
         if (config.services().stepfunctions().enabled()) enabled.add("states");
         if (config.services().cloudformation().enabled()) enabled.add("cloudformation");
+        if (config.services().opensearch().enabled()) enabled.add("opensearch");
         return enabled;
     }
 
